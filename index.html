@@ -1,101 +1,482 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar">
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Genesis Coupe | REAL Digital Cockpit</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Genesis Coupe | REAL OBD2 Digital Dashboard</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
         body {
             background: radial-gradient(circle at 20% 30%, #0a0a12 0%, #010101 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Segoe UI', 'Tahoma', monospace;
-            margin: 0;
-            overflow: hidden;
+            font-family: 'Orbitron', 'Segoe UI', 'Courier New', monospace;
+            padding: 15px;
         }
+
+        /* تصميم مناسب للتابلت (شاشة أفقية) */
         .dashboard {
-            width: 95vw;
-            max-width: 1400px;
-            background: rgba(5, 5, 12, 0.75);
-            backdrop-filter: blur(8px);
-            border-radius: 60px;
-            border: 1px solid rgba(255, 51, 102, 0.5);
-            padding: 25px 20px;
-            box-shadow: 0 30px 50px rgba(0,0,0,0.6);
+            max-width: 1280px;
+            width: 100%;
+            background: rgba(5, 5, 12, 0.85);
+            backdrop-filter: blur(12px);
+            border-radius: 50px;
+            border: 2px solid rgba(255, 51, 102, 0.6);
+            padding: 20px 25px 30px;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.05);
         }
-        .header { text-align: center; margin-bottom: 20px; }
-        .header .english { font-size: 22px; font-weight: 800; letter-spacing: 8px; color: #ff3366; }
-        .header .arabic { font-size: 28px; font-weight: bold; color: #ffffff; text-shadow: 0 0 8px #ff3366; }
-        .gauges-container { display: flex; justify-content: center; align-items: center; gap: 30px; margin-top: 20px; }
+
+        /* الهيدر */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header .english {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 6px;
+            background: linear-gradient(135deg, #ff3366, #ffcc00);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .header .arabic {
+            font-size: 26px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 0 0 8px #ff3366;
+            margin-top: 5px;
+        }
+        .header .arabic span {
+            color: #ffcc00;
+        }
+
+        /* العدادات الرئيسية + صورة السيارة */
+        .gauges-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 25px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+
         .gauge {
             position: relative;
-            width: 260px;
-            height: 260px;
+            width: 240px;
+            height: 240px;
+            background: radial-gradient(ellipse at 30% 35%, #12121c, #030308);
             border-radius: 50%;
             border: 3px solid rgba(255, 51, 102, 0.7);
-            box-shadow: 0 0 25px rgba(255,51,102,0.3);
+            box-shadow: 0 0 25px rgba(255, 51, 102, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.5);
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
         }
+
         .needle {
             position: absolute;
-            width: 6px;
-            height: 105px;
-            background: linear-gradient(180deg, #ffcc44, #ff3366);
+            width: 5px;
+            height: 95px;
+            background: linear-gradient(180deg, #ffcc44, #ff3366, #00aaff);
             bottom: 50%;
+            left: 50%;
             transform-origin: bottom center;
-            transform: rotate(-130deg);
-            border-radius: 10px;
-            transition: transform 0.05s ease-out;
+            transform: translateX(-50%) rotate(-130deg);
+            border-radius: 8px;
+            transition: transform 0.05s cubic-bezier(0.2, 0.95, 0.4, 1);
+            box-shadow: 0 0 4px cyan;
             z-index: 2;
         }
-        .gauge-value { font-size: 48px; font-weight: 900; color: #ffffff; text-shadow: 0 0 6px #ff3366; margin-top: 45px; }
-        .gauge-label { font-size: 13px; color: #88aaff; font-weight: bold; letter-spacing: 2px; }
+
+        .center-cap {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle, #fff, #ff3366);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            box-shadow: 0 0 8px #ff3366;
+        }
+
+        .gauge-value {
+            font-size: 44px;
+            font-weight: 900;
+            font-family: monospace;
+            color: #ffffff;
+            text-shadow: 0 0 8px #ff3366;
+            margin-top: 40px;
+        }
+
+        .gauge-label {
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: #88aaff;
+            margin-top: 5px;
+        }
+
+        /* صورة السيارة - استخدم صورتك الشخصية */
         .car-image-container {
-            width: 380px;
-            height: 220px;
-            border-radius: 35px;
-            border: 2px solid rgba(255,51,102,0.6);
+            position: relative;
+            width: 340px;
+            height: 200px;
+            background: linear-gradient(145deg, #0a0a14, #050508);
+            border-radius: 30px;
+            border: 2px solid rgba(255, 51, 102, 0.6);
+            box-shadow: 0 0 25px rgba(255, 51, 102, 0.2);
             overflow: hidden;
         }
-        .car-image { width: 100%; height: 100%; object-fit: cover; object-position: center; }
-        .panel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin: 30px 0; }
-        .card { background: rgba(16, 20, 30, 0.8); border-radius: 20px; padding: 15px; text-align: center; border-bottom: 3px solid #ff3366; }
-        .panel-label { font-size: 12px; color: #aaccff; text-transform: uppercase; }
-        .panel-value { font-size: 32px; font-weight: 800; color: #ffffff; }
+        .car-image-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,51,102,0.15) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+        .car-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: transform 0.3s ease;
+        }
+        .car-name-badge {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 4px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #ffcc00;
+            border: 1px solid #ff3366;
+            white-space: nowrap;
+            z-index: 2;
+        }
+
+        /* لوحة المعلومات الرقمية */
+        .info-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 25px 0 20px;
+        }
+        .info-card {
+            background: rgba(16, 20, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 12px 8px;
+            text-align: center;
+            border-bottom: 3px solid #ff3366;
+            border-right: 1px solid #00ccff;
+        }
+        .info-label {
+            font-size: 11px;
+            color: #aaccff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .info-value {
+            font-size: 28px;
+            font-weight: 800;
+            font-family: monospace;
+            color: #ffffff;
+            text-shadow: 0 0 4px #ff3366;
+        }
+
+        /* الحالة */
+        .status-bar {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            border: 1px solid #ff336644;
+        }
+        .connection-status {
+            font-size: 12px;
+            font-weight: bold;
+            color: #88ff88;
+        }
+        .ip-hint {
+            font-size: 10px;
+            color: #888;
+            font-family: monospace;
+        }
+        .redline-led {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #330000;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 900px) {
+            .gauge { width: 200px; height: 200px; }
+            .needle { height: 75px; }
+            .gauge-value { font-size: 34px; margin-top: 30px; }
+            .car-image-container { width: 280px; height: 170px; }
+            .info-value { font-size: 22px; }
+        }
+        @media (max-width: 750px) {
+            .gauges-container { flex-direction: column; }
+            .car-image-container { order: -1; width: 90%; max-width: 320px; }
+        }
+
+        @keyframes pulse-red {
+            0% { text-shadow: 0 0 0px #ff3366; border-color: #ff3366; }
+            100% { text-shadow: 0 0 15px #ff0080; border-color: #ff7799; }
+        }
+        .redline-active {
+            animation: pulse-red 0.15s infinite alternate;
+        }
     </style>
 </head>
 <body>
-    <div class="dashboard">
-        <div class="header">
-            <div class="english">THE GENESIS EXPERIENCE</div>
-            <div class="arabic">GENESIS <span style="color: #ffcc00;">RAWan</span> <small>// COUPE 3.8</small></div>
+<div class="dashboard">
+    <div class="header">
+        <div class="english">⚡ THE GENESIS EXPERIENCE ⚡</div>
+        <div class="arabic">GENESIS <span>RAWan</span> <small style="font-size: 14px; color:#88aaff;">// COUPE 3.8</small></div>
+    </div>
+
+    <div class="gauges-container">
+        <!-- RPM GAUGE -->
+        <div class="gauge" id="rpmGauge">
+            <div id="rpmNeedle" class="needle"></div>
+            <div class="center-cap"></div>
+            <div id="rpmValue" class="gauge-value">0</div>
+            <div class="gauge-label">RPM x1000</div>
         </div>
-        <div class="gauges-container">
-            <div class="gauge"><div id="rpmNeedle" class="needle"></div><div id="rpmNum" class="gauge-value">0</div><div class="gauge-label">RPM x1000</div></div>
-            <div class="car-image-container"><img class="car-image" src="image.png"></div>
-            <div class="gauge"><div id="speedNeedle" class="needle"></div><div id="speedNum" class="gauge-value">0</div><div class="gauge-label">KM/H</div></div>
+
+        <!-- صورة سيارتك -->
+        <div class="car-image-container">
+            <img class="car-image" id="carImage" src="image.png" alt="My Genesis Coupe" 
+                 onerror="this.src='https://images.unsplash.com/photo-1617814076367-b759c7d7e738?w=500'">
+            <div class="car-name-badge">🇸🇦 MY GENESIS COUPE</div>
         </div>
-        <div class="panel">
-            <div class="card"><div class="panel-label">GEAR</div><div class="panel-value">3</div></div>
-            <div class="card"><div class="panel-label">G-FORCE</div><div class="panel-value">1.12</div></div>
-            <div class="card"><div class="panel-label">BOOST (psi)</div><div class="panel-value">22.4</div></div>
-            <div class="card"><div class="panel-label">FUEL CONS.</div><div class="panel-value">14.8 L/h</div></div>
+
+        <!-- SPEED GAUGE -->
+        <div class="gauge">
+            <div id="speedNeedle" class="needle"></div>
+            <div class="center-cap"></div>
+            <div id="speedValue" class="gauge-value">0</div>
+            <div class="gauge-label">KM/H</div>
         </div>
     </div>
-    <script>
-        let rpm = 0; let speed = 0; let up = true; const MAX_RPM = 7800;
-        setInterval(() => {
-            if (up) { rpm += 80; speed += 1.5; if (rpm >= 7000) up = false; }
-            else { rpm -= 120; speed -= 2.2; if (rpm <= 1000) up = true; }
-            document.getElementById('rpmNum').innerHTML = (rpm / 1000).toFixed(1);
-            document.getElementById('speedNum').innerHTML = Math.floor(speed);
-            document.getElementById('rpmNeedle').style.transform = `rotate(${(rpm / MAX_RPM) * 240 - 130}deg)`;
-            document.getElementById('speedNeedle').style.transform = `rotate(${(speed / 300) * 240 - 130}deg)`;
-        }, 30);
-    </script>
+
+    <!-- المعلومات الرقمية -->
+    <div class="info-panel">
+        <div class="info-card"><div class="info-label">⚙️ GEAR</div><div class="info-value" id="gearDisplay">1</div></div>
+        <div class="info-card"><div class="info-label">🌡️ WATER TEMP</div><div class="info-value" id="waterTemp">--°C</div></div>
+        <div class="info-card"><div class="info-label">⚡ VOLTAGE</div><div class="info-value" id="voltage">--V</div></div>
+        <div class="info-card"><div class="info-label">🎯 THROTTLE</div><div class="info-value" id="throttle">--%</div></div>
+    </div>
+
+    <!-- شريط الحالة -->
+    <div class="status-bar">
+        <div class="connection-status">
+            <span class="redline-led" id="redlineLed"></span>
+            <span id="statusText">📡 انتظار الاتصال بالسيارة...</span>
+        </div>
+        <div class="ip-hint" id="ipHint">⚙️ ضبط IP: setIP("192.168.x.x")</div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // GENESIS COUPE - REAL OBD2 DIGITAL DASHBOARD FOR TABLET
+    // ============================================================
+    
+    let rpm = 0;
+    let speed = 0;
+    let throttle = 0;
+    let waterTemp = 85;
+    let voltage = 13.8;
+    let gear = 1;
+    
+    let isConnected = false;
+    let serverUrl = "http://192.168.43.1:8080";  // الـ IP الافتراضي لـ Torque
+    
+    const MAX_RPM = 7800;
+    const REDLINE_RPM = 6700;
+    const MAX_SPEED = 280;
+    
+    // قراءة البيانات الحقيقية من تطبيق Torque
+    async function fetchRealData() {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 1500);
+            
+            const response = await fetch(serverUrl + "/data.json", {
+                method: 'GET',
+                mode: 'cors',
+                signal: controller.signal
+            });
+            
+            clearTimeout(timeoutId);
+            
+            if (!response.ok) throw new Error("Server error");
+            
+            const data = await response.json();
+            
+            // استخراج البيانات (أسماء مختلفة حسب إعدادات Torque)
+            rpm = parseFloat(data.rpm) || parseFloat(data.RPM) || parseFloat(data.engine_rpm) || rpm;
+            speed = parseFloat(data.speed) || parseFloat(data.kph) || parseFloat(data.SPEED) || parseFloat(data.vehicle_speed) || speed;
+            throttle = parseFloat(data.throttle) || parseFloat(data.TP) || parseFloat(data.throttle_position) || throttle;
+            waterTemp = parseFloat(data.water_temp) || parseFloat(data.ECT) || parseFloat(data.coolant_temp) || waterTemp;
+            voltage = parseFloat(data.voltage) || parseFloat(data.battery_voltage) || voltage;
+            
+            if (!isConnected) {
+                isConnected = true;
+                document.getElementById('statusText').innerHTML = "✅ متصل بالسيارة | بيانات حقيقية مباشرة";
+                document.getElementById('statusText').style.color = "#88ff88";
+            }
+            
+            updateDisplay();
+            
+        } catch (error) {
+            if (isConnected) {
+                isConnected = false;
+                document.getElementById('statusText').innerHTML = "⚠️ فقد الاتصال | تأكد من تشغيل Torque Server";
+                document.getElementById('statusText').style.color = "#ffaa88";
+            }
+            // وضع العرض التجريبي عند عدم وجود اتصال
+            generateDemoData();
+            updateDisplay();
+        }
+    }
+    
+    // بيانات تجريبية للعرض عندما السيارة غير متصلة
+    function generateDemoData() {
+        let t = Date.now() / 1000;
+        rpm = 950 + Math.sin(t * 2.5) * 180 + Math.sin(t * 0.7) * 100;
+        speed = Math.max(0, Math.sin(t * 1.2) * 45 + 20);
+        throttle = 15 + Math.sin(t * 2) * 12;
+        waterTemp = 86 + Math.sin(t * 0.15) * 2;
+        voltage = 13.9 + Math.sin(t * 0.3) * 0.2;
+        
+        rpm = Math.min(MAX_RPM, Math.max(800, rpm));
+        speed = Math.min(MAX_SPEED, Math.max(0, speed));
+        throttle = Math.min(100, Math.max(0, throttle));
+    }
+    
+    // تحديث جميع العناصر في الشاشة
+    function updateDisplay() {
+        // تحديث الأرقام
+        document.getElementById('rpmValue').innerHTML = (rpm / 1000).toFixed(1);
+        document.getElementById('speedValue').innerHTML = Math.floor(speed);
+        document.getElementById('throttle').innerHTML = Math.floor(throttle) + '%';
+        document.getElementById('waterTemp').innerHTML = Math.floor(waterTemp) + '°C';
+        document.getElementById('voltage').innerHTML = voltage.toFixed(1) + 'V';
+        
+        // حساب الترس بناءً على السرعة
+        if (speed > 200) gear = 7;
+        else if (speed > 160) gear = 6;
+        else if (speed > 120) gear = 5;
+        else if (speed > 85) gear = 4;
+        else if (speed > 55) gear = 3;
+        else if (speed > 25) gear = 2;
+        else gear = 1;
+        if (speed < 8) gear = 1;
+        
+        document.getElementById('gearDisplay').innerHTML = gear;
+        
+        // حركة الإبر
+        let rpmAngle = (rpm / MAX_RPM) * 240 - 130;
+        let speedAngle = (speed / MAX_SPEED) * 240 - 130;
+        
+        document.getElementById('rpmNeedle').style.transform = `translateX(-50%) rotate(${rpmAngle}deg)`;
+        document.getElementById('speedNeedle').style.transform = `translateX(-50%) rotate(${speedAngle}deg)`;
+        
+        // تأثير Redline
+        const rpmGauge = document.getElementById('rpmGauge');
+        const redlineLed = document.getElementById('redlineLed');
+        if (rpm >= REDLINE_RPM) {
+            rpmGauge.classList.add('redline-active');
+            redlineLed.style.background = "#ff3366";
+            redlineLed.style.boxShadow = "0 0 8px red";
+        } else {
+            rpmGauge.classList.remove('redline-active');
+            redlineLed.style.background = "#330000";
+            redlineLed.style.boxShadow = "none";
+        }
+        
+        // تحذير حرارة المحرك
+        if (waterTemp > 110) {
+            document.getElementById('waterTemp').style.color = "#ff6666";
+        } else {
+            document.getElementById('waterTemp').style.color = "#ffffff";
+        }
+    }
+    
+    // دالة لتغيير IP السيرفر (تستخدم من Console المتصفح)
+    window.setTorqueServerIP = function(ip) {
+        serverUrl = "http://" + ip + ":8080";
+        document.getElementById('statusText').innerHTML = "🔄 جاري الاتصال بـ " + serverUrl;
+        document.getElementById('ipHint').innerHTML = "🔗 IP الحالي: " + ip;
+        setTimeout(fetchRealData, 500);
+    };
+    
+    // البحث التلقائي عن Torque Server
+    function autoDetectServer() {
+        const commonIPs = [
+            "192.168.43.1",      // Hotspot Android
+            "192.168.0.100",     // شبكة منزلية
+            "192.168.1.100",
+            "10.0.0.2",
+            "192.168.137.1"
+        ];
+        
+        let attempt = 0;
+        
+        function tryNext() {
+            if (attempt < commonIPs.length) {
+                serverUrl = "http://" + commonIPs[attempt] + ":8080";
+                document.getElementById('ipHint').innerHTML = "🔍 جاري فحص: " + commonIPs[attempt];
+                attempt++;
+                setTimeout(() => {
+                    fetchRealData().catch(() => tryNext());
+                }, 800);
+            } else {
+                document.getElementById('ipHint').innerHTML = "⚙️ استخدم setIP('192.168.x.x') لتعيين IP يدوي";
+            }
+        }
+        tryNext();
+    }
+    
+    // بدء الجلب التلقائي للبيانات كل 150 مللي ثانية
+    setInterval(fetchRealData, 150);
+    
+    // بدء البحث التلقائي بعد 1.5 ثانية
+    setTimeout(autoDetectServer, 1500);
+    
+    // تحديث أولي
+    updateDisplay();
+</script>
 </body>
 </html>
