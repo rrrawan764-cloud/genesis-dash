@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Genesis Coupe | Digital Cockpit with Car Image</title>
+    <title>Genesis Coupe | REAL Digital Cockpit</title>
     <style>
         * {
             margin: 0;
@@ -53,8 +53,12 @@
             text-shadow: 0 0 8px #ff3366;
             margin-top: 8px;
         }
+        .car-model small {
+            font-size: 14px;
+            color: #ffcc00;
+        }
 
-        /* القسم الرئيسي: عدادات + صورة السيارة في النص */
+        /* القسم الرئيسي: عدادات + صورة السيارة */
         .main-display {
             display: flex;
             justify-content: center;
@@ -135,7 +139,7 @@
             margin-top: 5px;
         }
 
-        /* صورة السيارة في الوسط - تصميم احترافي */
+        /* حاوية الصورة - صورة سيارتك الحقيقية */
         .car-image-container {
             position: relative;
             width: 380px;
@@ -156,11 +160,13 @@
             background: radial-gradient(circle at 50% 50%, rgba(255,51,102,0.1) 0%, transparent 70%);
             pointer-events: none;
         }
+        /* استخدام صورتك الشخصية */
         .car-image {
-            width: 95%;
-            height: auto;
-            object-fit: contain;
-            filter: drop-shadow(0 0 15px rgba(255,51,102,0.5));
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: drop-shadow(0 0 15px rgba(255,51,102,0.4));
             transition: transform 0.3s ease;
         }
         .car-image:hover {
@@ -292,8 +298,8 @@
 <body>
 <div class="cockpit">
     <div class="title-section">
-        <div class="genesis-logo">⚡ GENESIS PERFORMANCE ⚡</div>
-        <div class="car-model">جينسيس كوبيه <small style="font-size:14px;">DIGITAL COCKPIT</small></div>
+        <div class="genesis-logo">⚡ THE GENESIS EXPERIENCE ⚡</div>
+        <div class="car-model">GENESIS <span style="color: #ffcc00;">RAWan</span> <small>// COUPE 3.8</small></div>
     </div>
 
     <div class="main-display">
@@ -307,12 +313,10 @@
             </div>
         </div>
 
-        <!-- صورة السيارة في النص بالضبط -->
+        <!-- صورة سيارتك الحقيقية في النص -->
         <div class="car-image-container">
-            <img class="car-image" src="https://www.hyundai.com/content/dam/hyundai/in/en/data/find-a-car/find-a-car-image/new-genesis-coupe.png" 
-                 alt="Genesis Coupe"
-                 onerror="this.src='https://purepng.com/public/uploads/large/purepng.com-hyundai-genesis-coupecarhyundaivehiclessedan-coupe-961524663495cpbwr.png'">
-            <div class="car-name-badge">🇸🇦 GENESIS COUPE 3.8</div>
+            <img class="car-image" src="image.png" alt="My Genesis Coupe">
+            <div class="car-name-badge">🇸🇦 MY GENESIS COUPE</div>
         </div>
 
         <!-- SPEED GAUGE -->
@@ -346,11 +350,12 @@
         <div class="warning-light"><div class="led blue"></div><span>HIGH BEAM</span></div>
         <div class="warning-light"><div class="led green"></div><span>TURBO READY</span></div>
         <div class="warning-light"><div class="led yellow" id="tempLed"></div><span>ENGINE HOT</span></div>
-        <div class="warning-light"><span id="statusTxt">🏁 SPORT MODE</span></div>
+        <div class="warning-light"><span id="statusTxt">🏁 RACE MODE</span></div>
     </div>
 </div>
 
 <script>
+    // محاكاة ديناميكية واقعية (RPM/SPEED) بنفس النمط الذي تفضله
     let rpm = 1050;
     let speed = 0;
     let up = true;
