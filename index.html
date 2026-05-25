@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Genesis Digital Cockpit | Professional HUD</title>
+    <title>Genesis Coupe | Digital Cockpit with Car Image</title>
     <style>
         * {
             margin: 0;
@@ -22,9 +22,8 @@
             padding: 20px;
         }
 
-        /* كونتير الطبلون الرئيسي */
         .cockpit {
-            max-width: 1300px;
+            max-width: 1400px;
             width: 100%;
             background: rgba(5, 5, 12, 0.75);
             backdrop-filter: blur(8px);
@@ -34,11 +33,9 @@
             box-shadow: 0 30px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         }
 
-        /* شريط العنوان + الاسم */
         .title-section {
             text-align: center;
-            margin-bottom: 25px;
-            position: relative;
+            margin-bottom: 20px;
         }
         .genesis-logo {
             font-size: 22px;
@@ -48,7 +45,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-shadow: 0 0 15px rgba(0, 204, 255, 0.3);
         }
         .car-model {
             font-size: 28px;
@@ -56,24 +52,19 @@
             color: #ffffff;
             text-shadow: 0 0 8px #ff3366;
             margin-top: 8px;
-            letter-spacing: 2px;
-        }
-        .car-model small {
-            font-size: 14px;
-            color: #ffcc00;
-            letter-spacing: 1px;
         }
 
-        /* العدادات الرئيسية */
-        .gauges-row {
+        /* القسم الرئيسي: عدادات + صورة السيارة في النص */
+        .main-display {
             display: flex;
             justify-content: center;
             align-items: center;
             flex-wrap: wrap;
-            gap: 35px;
+            gap: 30px;
             margin: 20px 0;
         }
 
+        /* العدادات */
         .gauge {
             position: relative;
             width: 260px;
@@ -86,7 +77,6 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: 0.2s;
         }
         .gauge-inner {
             position: relative;
@@ -145,7 +135,55 @@
             margin-top: 5px;
         }
 
-        /* لوحة المعلومات الرقمية الوسطى (Gear, G-Force, Boost, استهلاك) */
+        /* صورة السيارة في الوسط - تصميم احترافي */
+        .car-image-container {
+            position: relative;
+            width: 380px;
+            height: 220px;
+            background: linear-gradient(145deg, #0a0a14, #050508);
+            border-radius: 35px;
+            border: 2px solid rgba(255, 51, 102, 0.6);
+            box-shadow: 0 0 30px rgba(255, 51, 102, 0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        .car-image-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,51,102,0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        .car-image {
+            width: 95%;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 0 15px rgba(255,51,102,0.5));
+            transition: transform 0.3s ease;
+        }
+        .car-image:hover {
+            transform: scale(1.02);
+        }
+        .car-name-badge {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            padding: 5px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffcc00;
+            letter-spacing: 2px;
+            border: 1px solid #ff3366;
+            white-space: nowrap;
+        }
+
+        /* اللوحة الرقمية السفلية */
         .digital-panel {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -160,7 +198,6 @@
             text-align: center;
             border-bottom: 3px solid #ff3366;
             border-right: 1px solid #00ccff;
-            transition: all 0.2s;
         }
         .metric-label {
             font-size: 12px;
@@ -178,7 +215,29 @@
             color: transparent;
         }
 
-        /* شريط تحذيرات + حالة السيارة */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 15px 0;
+        }
+        .stat-box {
+            background: #111116;
+            padding: 8px;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 10px;
+            color: #888899;
+            text-transform: uppercase;
+        }
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+        }
+
         .warning-strip {
             display: flex;
             justify-content: space-between;
@@ -189,6 +248,7 @@
             padding: 12px 25px;
             margin-top: 15px;
             border: 1px solid #ff336644;
+            flex-wrap: wrap;
         }
         .warning-light {
             display: flex;
@@ -202,26 +262,24 @@
             height: 14px;
             border-radius: 50%;
             background: #333;
-            box-shadow: 0 0 2px;
         }
         .led.red { background: #ff0044; box-shadow: 0 0 10px red; }
         .led.blue { background: #00aaff; box-shadow: 0 0 8px cyan; }
         .led.green { background: #44ff44; box-shadow: 0 0 6px lime; }
         .led.yellow { background: #ffcc00; box-shadow: 0 0 6px gold; }
 
-        /* responsive */
-        @media (max-width: 720px) {
-            .gauge { width: 200px; height: 200px; }
-            .needle { height: 75px; width: 5px; }
-            .gauge-value { font-size: 32px; margin-top: 35px; }
-            .metric-value { font-size: 22px; }
-            .digital-panel { gap: 8px; }
+        @media (max-width: 1000px) {
+            .main-display { gap: 20px; }
+            .gauge { width: 210px; height: 210px; }
+            .needle { height: 80px; }
+            .gauge-value { font-size: 34px; margin-top: 35px; }
+            .car-image-container { width: 300px; height: 180px; }
+            .metric-value { font-size: 24px; }
         }
-        @media (max-width: 560px) {
-            .cockpit { padding: 15px; }
-            .warning-strip { flex-wrap: wrap; justify-content: center; gap: 12px; }
+        @media (max-width: 780px) {
+            .main-display { flex-direction: column; }
+            .car-image-container { order: -1; width: 90%; max-width: 350px; }
         }
-        /* redline puls */
         @keyframes pulse-red {
             0% { text-shadow: 0 0 0px #ff3366; border-color: #ff3366; }
             100% { text-shadow: 0 0 18px #ff0080; border-color: #ff7799; }
@@ -235,10 +293,10 @@
 <div class="cockpit">
     <div class="title-section">
         <div class="genesis-logo">⚡ GENESIS PERFORMANCE ⚡</div>
-        <div class="car-model">جينسيس كوبيه <small>DIGITAL COCKPIT</small></div>
+        <div class="car-model">جينسيس كوبيه <small style="font-size:14px;">DIGITAL COCKPIT</small></div>
     </div>
 
-    <div class="gauges-row">
+    <div class="main-display">
         <!-- RPM GAUGE -->
         <div class="gauge" id="rpmGauge">
             <div class="gauge-inner">
@@ -248,6 +306,15 @@
                 <div class="gauge-label">RPM x1000</div>
             </div>
         </div>
+
+        <!-- صورة السيارة في النص بالضبط -->
+        <div class="car-image-container">
+            <img class="car-image" src="https://www.hyundai.com/content/dam/hyundai/in/en/data/find-a-car/find-a-car-image/new-genesis-coupe.png" 
+                 alt="Genesis Coupe"
+                 onerror="this.src='https://purepng.com/public/uploads/large/purepng.com-hyundai-genesis-coupecarhyundaivehiclessedan-coupe-961524663495cpbwr.png'">
+            <div class="car-name-badge">🇸🇦 GENESIS COUPE 3.8</div>
+        </div>
+
         <!-- SPEED GAUGE -->
         <div class="gauge">
             <div class="gauge-inner">
@@ -259,23 +326,21 @@
         </div>
     </div>
 
-    <!-- Professional Digital Panel -->
+    <!-- Digital Info Panel -->
     <div class="digital-panel">
         <div class="metric-card"><div class="metric-label">⚙️ GEAR</div><div class="metric-value" id="gearDisplay">1</div></div>
         <div class="metric-card"><div class="metric-label">🌀 G-FORCE</div><div class="metric-value" id="gforce">0.00</div></div>
         <div class="metric-card"><div class="metric-label">🔥 BOOST (psi)</div><div class="metric-value" id="boost">0.0</div></div>
-        <div class="metric-card"><div class="metric-label">⛽ FUEL CONSUMP</div><div class="metric-value" id="fuelCons">0.0</div></div>
+        <div class="metric-card"><div class="metric-label">⛽ FUEL CONS.</div><div class="metric-value" id="fuelCons">0.0</div></div>
     </div>
 
-    <!-- Additional car stats -->
-    <div class="stats-grid" style="display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin: 15px 0;">
-        <div class="stat-box" style="background:#111116; padding:8px; border-radius:20px; border-left:3px solid #ff3366;"><div class="stat-label">🌡️ WATER</div><div class="stat-value" id="waterStat">92°C</div></div>
-        <div class="stat-box" style="background:#111116; padding:8px; border-radius:20px; border-left:3px solid #00ccff;"><div class="stat-label">⚡ VOLTS</div><div class="stat-value" id="voltStat">14.3V</div></div>
-        <div class="stat-box" style="background:#111116; padding:8px; border-radius:20px; border-left:3px solid #ffcc00;"><div class="stat-label">🎯 THROTTLE</div><div class="stat-value" id="throttleStat">42%</div></div>
-        <div class="stat-box" style="background:#111116; padding:8px; border-radius:20px; border-left:3px solid #44ff44;"><div class="stat-label">⛽ FUEL</div><div class="stat-value" id="fuelStat">78%</div></div>
+    <div class="stats-grid">
+        <div class="stat-box" style="border-left:3px solid #ff3366;"><div class="stat-label">🌡️ WATER</div><div class="stat-value" id="waterStat">92°C</div></div>
+        <div class="stat-box" style="border-left:3px solid #00ccff;"><div class="stat-label">⚡ VOLTS</div><div class="stat-value" id="voltStat">14.3V</div></div>
+        <div class="stat-box" style="border-left:3px solid #ffcc00;"><div class="stat-label">🎯 THROTTLE</div><div class="stat-value" id="throttleStat">42%</div></div>
+        <div class="stat-box" style="border-left:3px solid #44ff44;"><div class="stat-label">⛽ FUEL</div><div class="stat-value" id="fuelStat">78%</div></div>
     </div>
 
-    <!-- Warning strip with professional LEDs -->
     <div class="warning-strip">
         <div class="warning-light"><div class="led red" id="redlineLed"></div><span>REDLINE</span></div>
         <div class="warning-light"><div class="led blue"></div><span>HIGH BEAM</span></div>
@@ -286,10 +351,6 @@
 </div>
 
 <script>
-    // ----------------------------------------------
-    // PROFESSIONAL DIGITAL COCKPIT - GENESIS COUPE
-    // RPM/SPEED realistic cycle + all metrics dynamic
-    // ----------------------------------------------
     let rpm = 1050;
     let speed = 0;
     let up = true;
@@ -301,17 +362,13 @@
     let voltage = 14.2;
     let throttle = 18;
     let fuel = 78;
-    
-    let lastRpm = rpm;
-    let lastSpeed = speed;
-    
-    // Constants
+    let lastSpeed = 0;
+
     const MAX_RPM = 7800;
     const REDLINE_RPM = 6800;
     const MAX_SPEED = 300;
-    
+
     function updatePhysicsAndUI() {
-        // ---- SAME BASE LOGIC as original but polished ----
         if (up) {
             rpm += 26;
             speed += 1.4;
@@ -323,13 +380,12 @@
             throttle = Math.max(8, throttle - 0.55);
             if (rpm <= 1400 || speed <= 3) up = true;
         }
-        
-        // Clamps
+
         rpm = Math.min(MAX_RPM, Math.max(850, rpm));
         speed = Math.min(MAX_SPEED, Math.max(0, speed));
         throttle = Math.min(100, throttle);
-        
-        // GEAR logic based on speed & rpm (sporty)
+
+        // Gear logic
         if (speed > 210 && rpm > 5500) gear = 7;
         else if (speed > 170 && rpm > 4500) gear = 6;
         else if (speed > 130 && rpm > 3800) gear = 5;
@@ -338,29 +394,23 @@
         else if (speed > 25 && rpm > 1900) gear = 2;
         else gear = 1;
         if (speed < 10) gear = 1;
-        
-        // G-Force simulation (change in speed)
+
         let deltaSpeed = speed - lastSpeed;
         gforceVal = Math.min(1.5, Math.max(-1.2, gforceVal * 0.7 + (deltaSpeed / 25) * 0.5));
         lastSpeed = speed;
-        
-        // Boost psi (depends on rpm and throttle, feels like turbo)
+
         boostVal = Math.min(28, Math.max(0, (throttle / 100) * 1.9 * ((rpm - 2000) / 5000) * 18));
         if (boostVal < 0) boostVal = 0;
-        
-        // Fuel consumption (dynamic based on throttle)
+
         fuelConsumption = (throttle / 100) * 0.32;
         fuel = Math.max(1, fuel - fuelConsumption * 0.008);
-        if (fuel < 3 && rpm > 2000) fuel = Math.max(0.5, fuel);
         if (fuel < 2 && speed < 5 && !up) fuel = 78;
-        
-        // water temp & voltage realistic
+
         waterTemp = Math.min(128, waterTemp + (rpm / MAX_RPM) * 0.25 - (speed > 40 ? 0.07 : 0.02));
         if (waterTemp < 80) waterTemp += 0.1;
         voltage = 13.2 + (rpm / MAX_RPM) * 1.3 + (Math.sin(Date.now() * 0.008) * 0.05);
         voltage = Math.min(14.9, voltage);
-        
-        // Update DOM elements
+
         document.getElementById('rpmValue').innerText = (rpm / 1000).toFixed(1);
         document.getElementById('speedValue').innerText = Math.floor(speed);
         document.getElementById('gearDisplay').innerText = gear;
@@ -371,14 +421,12 @@
         document.getElementById('voltStat').innerHTML = voltage.toFixed(1) + "V";
         document.getElementById('throttleStat').innerHTML = Math.floor(throttle) + "%";
         document.getElementById('fuelStat').innerHTML = Math.floor(fuel) + "%";
-        
-        // Needles angles
+
         let rpmAngle = (rpm / MAX_RPM) * 240 - 130;
         let speedAngle = (speed / MAX_SPEED) * 240 - 130;
         document.getElementById('rpmNeedle').style.transform = `translateX(-50%) rotate(${rpmAngle}deg)`;
         document.getElementById('speedNeedle').style.transform = `translateX(-50%) rotate(${speedAngle}deg)`;
-        
-        // Redline effect + LED
+
         const rpmGaugeDiv = document.getElementById('rpmGauge');
         const redlineLed = document.getElementById('redlineLed');
         if (rpm >= REDLINE_RPM) {
@@ -392,27 +440,16 @@
             redlineLed.style.boxShadow = "none";
             document.getElementById('statusTxt').innerHTML = "🏁 RACE MODE";
         }
-        
-        // Engine hot warning LED
+
         const tempLed = document.getElementById('tempLed');
         if (waterTemp > 112) tempLed.style.background = "#ff6600";
         else if (waterTemp > 100) tempLed.style.background = "#ffaa00";
         else tempLed.style.background = "#333";
-        
-        // Cool extra: change border colors dynamic (gold/red/cyan)
-        if (boostVal > 15) document.querySelector('.cockpit').style.borderColor = "#00ffcc";
-        else if (rpm > 5500) document.querySelector('.cockpit').style.borderColor = "#ff3366";
-        else document.querySelector('.cockpit').style.borderColor = "#ffcc00";
-        
-        requestAnimationFrame(() => setTimeout(() => {}, 5));
     }
-    
-    // Loop with smooth 30-40fps
+
     setInterval(() => {
         updatePhysicsAndUI();
     }, 30);
-    
-    // Initial set
     updatePhysicsAndUI();
 </script>
 </body>
